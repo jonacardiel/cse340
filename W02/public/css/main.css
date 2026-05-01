@@ -1,67 +1,51 @@
-* {
-  box-sizing: border-box;
+html,
+body {
+  background-color: lightblue;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
 }
 
 body {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.5;
-  color: #1f2937;
-  background: #f9fafb;
-}
+  nav {
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0 0 16px 0;
+    }
 
-header {
-  background: #0f172a;
-  padding: 1rem;
-}
+    li {
+      display: inline;
+      margin-right: 15px;
+    }
 
-nav ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-}
+    a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
 
-nav a {
-  color: #ffffff;
-  text-decoration: none;
-}
+      &:hover {
+        color: #0066cc;
+      }
+    }
+  }
 
-nav a:hover {
-  text-decoration: underline;
-}
+  main {
+    max-width: 850px;
+  }
 
-main {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
+  .about-photo {
+    width: 260px;
+    max-width: 100%;
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+  }
 
-img {
-  max-width: 100%;
-  border-radius: 8px;
-  display: block;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-}
-
-.product-card,
-.student-info {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-footer {
-  margin-top: 2rem;
-  background: #111827;
-  color: #f9fafb;
-  text-align: center;
-  padding: 1rem;
+  .card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid #d5e4f3;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
 }
