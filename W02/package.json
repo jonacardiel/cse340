@@ -1,0 +1,21 @@
+{
+  "name": "w02-ejs-assignment",
+  "version": "1.0.0",
+  "description": "CSE340 W02 - Template Engines, Partials, and Layouts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
