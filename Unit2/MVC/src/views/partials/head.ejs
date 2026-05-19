@@ -4,16 +4,4 @@
   <title><%= title %></title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/catalog.css">
-  <% if (NODE_ENV.includes('dev')) { %>
-  <script>
-    const host = window.location.hostname
-    const currentPort = window.location.port
-    const wsPort = currentPort ? (parseInt(currentPort) + 1) : 3001
-    const ws = new WebSocket(`ws://${host}:${wsPort}`)
-
-    ws.onclose = () => {
-      setTimeout(() => location.reload(), 2000)
-    }
-  </script>
-  <% } %>
 </head>
