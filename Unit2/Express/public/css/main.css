@@ -1,0 +1,41 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #e9f3ff;
+  color: #222;
+}
+
+body {
+  padding: 20px;
+
+  nav {
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    a {
+      text-decoration: none;
+      font-weight: 700;
+      color: #103c6f;
+
+      &:hover {
+        color: #0a2a4d;
+      }
+    }
+  }
+
+  main {
+    max-width: 900px;
+  }
+
+  footer {
+    margin-top: 30px;
+    color: #444;
+  }
+}

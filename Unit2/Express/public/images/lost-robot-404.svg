@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Lost Robot 404</title>
+  <desc id="desc">A confused robot standing next to a sign that says 404.</desc>
+  <rect width="640" height="360" fill="#eef6ff"/>
+  <circle cx="140" cy="70" r="42" fill="#d6e6ff"/>
+  <circle cx="520" cy="58" r="28" fill="#d6e6ff"/>
+  <rect x="220" y="90" width="200" height="190" rx="22" fill="#9dc4f3"/>
+  <rect x="255" y="45" width="130" height="70" rx="12" fill="#7faee7"/>
+  <circle cx="295" cy="80" r="10" fill="#102a43"/>
+  <circle cx="345" cy="80" r="10" fill="#102a43"/>
+  <rect x="292" y="105" width="56" height="10" rx="5" fill="#3b5f8a"/>
+  <rect x="246" y="300" width="40" height="16" rx="8" fill="#3b5f8a"/>
+  <rect x="354" y="300" width="40" height="16" rx="8" fill="#3b5f8a"/>
+  <rect x="120" y="210" width="76" height="96" rx="10" fill="#ffd166" stroke="#9b6b00" stroke-width="4"/>
+  <text x="158" y="268" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#5a3c00">404</text>
+  <text x="320" y="338" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#1f3a5f">Oops. This page wandered off.</text>
+</svg>

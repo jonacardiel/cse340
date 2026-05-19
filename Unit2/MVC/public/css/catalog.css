@@ -1,0 +1,125 @@
+/* Course catalog styles using native CSS nesting */
+.course-list {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .course-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background: #fff;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+      margin: 0 0 0.5rem 0;
+
+      a {
+        color: #2c5aa0;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .course-id {
+      color: #666;
+      font-weight: 500;
+      margin: 0 0 1rem 0;
+    }
+
+    .course-description {
+      color: #444;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+.course-header {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+
+  h1 {
+    margin-top: 0;
+  }
+
+  .course-meta {
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+}
+
+.sections {
+  max-width: 800px;
+  margin: 0 auto;
+
+  .sections-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .sort-options {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    a {
+      color: #2c5aa0;
+      text-decoration: none;
+      border: 1px solid #cdd8ea;
+      border-radius: 6px;
+      padding: 0.2rem 0.5rem;
+
+      &.active {
+        background: #2c5aa0;
+        color: #fff;
+        border-color: #2c5aa0;
+      }
+    }
+  }
+
+  .section-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .section-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+
+    .section-time {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-room,
+    .section-professor {
+      color: #444;
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+.navigation {
+  max-width: 800px;
+  margin: 1.25rem auto 0;
+}
