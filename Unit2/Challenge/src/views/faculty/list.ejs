@@ -1,0 +1,22 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<h2>Faculty Directory</h2>
+
+<p>
+  Sort by: 
+  <a href="/faculty">Name</a> |
+  <a href="/faculty?sort=department">Department</a> |
+  <a href="/faculty?sort=title">Title</a>
+</p>
+
+<% faculty.forEach(f => { %>
+  <div>
+    <h3><a href="/faculty/<%= f.id %>"><%= f.name %></a></h3>
+    <p><%= f.department %> - <%= f.title %></p>
+  </div>
+<% }); %>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
