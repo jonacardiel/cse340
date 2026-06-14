@@ -25,7 +25,7 @@ const contactFormPage = (req, res) => {
 
 const submitContactForm = [contactValidation, async (req, res) => {
   const errors = validationResult(req);
-  const values = {
+  const formData = {
     subject: req.body.subject || "",
     message: req.body.message || ""
   };
@@ -35,12 +35,12 @@ const submitContactForm = [contactValidation, async (req, res) => {
     return res.status(400).render("forms/contact/form", {
       title: "Contact Us",
       errors: errors.array(),
-      values
+      values: formData
     });
   }
 
   try {
-    await createContactForm(values.subject, values.message);
+    await createContactForm(formData.subject, formData.message);
     return res.redirect("/contact/responses");
   } catch (error) {
     console.error("Contact form save error:", error);

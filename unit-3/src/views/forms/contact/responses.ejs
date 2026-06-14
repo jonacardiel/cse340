@@ -1,22 +1,19 @@
 <%- include("../../partials/head") %>
 <%- include("../../partials/header") %>
 
-<section class="panel">
-  <p class="eyebrow">Contact Responses</p>
-  <h2>Saved messages</h2>
+<section class="contact-responses">
+  <h2>Contact Form Submissions</h2>
 
-  <% if (responses.length === 0) { %>
-    <p>No contact forms have been saved yet.</p>
+  <% if (responses.length > 0) { %>
+    <% responses.forEach((response) => { %>
+      <div class="response-item">
+        <h3 class="response-subject"><%= response.subject %></h3>
+        <p class="response-message"><%= response.message %></p>
+        <p class="response-date">Submitted: <%= new Date(response.submitted).toLocaleDateString() %></p>
+      </div>
+    <% }) %>
   <% } else { %>
-    <div class="course-list">
-      <% responses.forEach((response) => { %>
-        <article class="card">
-          <h3><%= response.subject %></h3>
-          <p><%= response.message %></p>
-          <p><small><%= response.submitted %></small></p>
-        </article>
-      <% }) %>
-    </div>
+    <p class="no-responses">No contact form submissions yet.</p>
   <% } %>
 </section>
 

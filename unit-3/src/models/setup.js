@@ -1,4 +1,10 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { query } from "./db.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function setupDatabase() {
   await query(`
@@ -100,6 +106,16 @@ async function setupDatabase() {
       ('CSE 340', 'Web Backend Development', 'Sister Enkey', 'sister-enkey', 'TR 11:00 AM', 'STC 394')
     ON CONFLICT DO NOTHING
   `);
+
+  const practicePath = path.join(__dirname, "sql", "practice.sql");
+
+  if (fs.existsSync(practicePath)) {
+    const practiceSQL = fs.readFileSync(practicePath, "utf8");
+    await query(practiceSQL);
+    console.log("Practice database tables initialized");
+  }
+
+  console.log("Database seeded successfully");
 }
 
 export { setupDatabase };

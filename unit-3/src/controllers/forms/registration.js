@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import { emailExists, saveUser, getAllUsers } from "../../models/forms/registration.js";
 
@@ -34,7 +34,7 @@ const registrationFormPage = (req, res) => {
 
 const submitRegistrationForm = [registrationValidation, async (req, res) => {
   const errors = validationResult(req);
-  const values = {
+  const formData = {
     name: req.body.name || "",
     email: req.body.email || ""
   };
@@ -43,18 +43,18 @@ const submitRegistrationForm = [registrationValidation, async (req, res) => {
     return res.status(400).render("forms/registration/form", {
       title: "Register",
       errors: errors.array(),
-      values
+      values: formData
     });
   }
 
   try {
-    const alreadyExists = await emailExists(req.body.email);
+    const emailTaken = await emailExists(req.body.email);
 
-    if (alreadyExists) {
+    if (emailTaken) {
       return res.status(400).render("forms/registration/form", {
         title: "Register",
         errors: [{ msg: "That email is already registered." }],
-        values
+        values: formData
       });
     }
 

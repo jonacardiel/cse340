@@ -25,6 +25,14 @@ router.use("/faculty", (req, res, next) => {
   next();
 });
 
+router.use("/contact", (req, res, next) => {
+  if (res.locals.addHeadAsset) {
+    res.locals.addHeadAsset("style", "/css/contact.css", 10);
+  }
+
+  next();
+});
+
 router.get("/", homePage);
 router.get("/about", aboutPage);
 router.get("/dashboard", requireLogin, dashboardPage);

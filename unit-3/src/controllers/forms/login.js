@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import { findUserForLogin } from "../../models/forms/login.js";
 
@@ -24,7 +24,7 @@ const loginFormPage = (req, res) => {
 
 const submitLoginForm = [loginValidation, async (req, res) => {
   const errors = validationResult(req);
-  const values = {
+  const formData = {
     email: req.body.email || ""
   };
 
@@ -32,38 +32,38 @@ const submitLoginForm = [loginValidation, async (req, res) => {
     return res.status(400).render("forms/login/form", {
       title: "Login",
       errors: errors.array(),
-      values
+      values: formData
     });
   }
 
   try {
-    const user = await findUserForLogin(req.body.email);
+    const foundUser = await findUserForLogin(req.body.email);
 
-    if (Object.keys(user).length === 0) {
+    if (Object.keys(foundUser).length === 0) {
       return res.status(400).render("forms/login/form", {
         title: "Login",
         errors: [{ msg: "Email or password is not correct." }],
-        values
+        values: formData
       });
     }
 
-    const passwordMatch = await bcrypt.compare(req.body.password, user.password);
+    const passwordMatch = await bcrypt.compare(req.body.password, foundUser.password);
 
     if (!passwordMatch) {
       return res.status(400).render("forms/login/form", {
         title: "Login",
         errors: [{ msg: "Email or password is not correct." }],
-        values
+        values: formData
       });
     }
 
-    const safeUser = {
-      id: user.id,
-      name: user.name,
-      email: user.email
+    const sessionUser = {
+      id: foundUser.id,
+      name: foundUser.name,
+      email: foundUser.email
     };
 
-    req.session.user = safeUser;
+    req.session.user = sessionUser;
     return res.redirect("/dashboard");
   } catch (error) {
     console.error("Login error:", error);
