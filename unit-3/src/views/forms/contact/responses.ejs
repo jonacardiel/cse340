@@ -1,0 +1,23 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Contact Responses</p>
+  <h2>Saved messages</h2>
+
+  <% if (responses.length === 0) { %>
+    <p>No contact forms have been saved yet.</p>
+  <% } else { %>
+    <div class="course-list">
+      <% responses.forEach((response) => { %>
+        <article class="card">
+          <h3><%= response.subject %></h3>
+          <p><%= response.message %></p>
+          <p><small><%= response.submitted %></small></p>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../../partials/footer") %>

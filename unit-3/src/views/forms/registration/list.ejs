@@ -1,0 +1,23 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Users</p>
+  <h2>Registered accounts</h2>
+
+  <% if (users.length === 0) { %>
+    <p>No users have been saved yet.</p>
+  <% } else { %>
+    <div class="course-list">
+      <% users.forEach((user) => { %>
+        <article class="card">
+          <h3><%= user.name %></h3>
+          <p><strong>Email:</strong> <%= user.email %></p>
+          <p><small>Created: <%= user.created_at %></small></p>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../../partials/footer") %>

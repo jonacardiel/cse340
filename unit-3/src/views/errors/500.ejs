@@ -1,0 +1,13 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="notice">
+  <p class="eyebrow">500</p>
+  <h2>Server error</h2>
+  <p><%= error %></p>
+  <% if (stack) { %>
+    <pre class="code-block"><%= stack %></pre>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

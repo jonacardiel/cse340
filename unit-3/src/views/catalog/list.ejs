@@ -1,0 +1,19 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="panel catalog-hero">
+  <p class="eyebrow">Catalog</p>
+  <h2>Course list</h2>
+  <div class="course-list">
+    <% courses.forEach((course) => { %>
+      <article class="card">
+        <h3><%= course.course_code %> - <%= course.name %></h3>
+        <p>Department: <%= course.department %></p>
+        <p>Credit hours: <%= course.credit_hours %></p>
+        <a href="/catalog/<%= course.slug %>">View details</a>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

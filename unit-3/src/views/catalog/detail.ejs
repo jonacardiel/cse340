@@ -1,0 +1,27 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Catalog detail</p>
+  <h2><%= course.course_code %> - <%= course.name %></h2>
+  <p><strong>Department:</strong> <%= course.department %></p>
+  <p><strong>Credit hours:</strong> <%= course.credit_hours %></p>
+
+  <h3>Sections</h3>
+  <% if (course.sections.length === 0) { %>
+    <p>No sections were found yet.</p>
+  <% } else { %>
+    <div class="course-list">
+      <% course.sections.forEach((section) => { %>
+        <article class="card">
+          <h4><%= section.course_name %></h4>
+          <p><strong>Professor:</strong> <%= section.professor %></p>
+          <p><strong>Time:</strong> <%= section.time %></p>
+          <p><strong>Room:</strong> <%= section.room %></p>
+        </article>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include("../partials/footer") %>

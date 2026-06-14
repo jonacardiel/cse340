@@ -1,0 +1,33 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Contact Us</p>
+  <h2>Send a message</h2>
+
+  <% if (errors.length > 0) { %>
+    <div class="error-list">
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form class="form-stack" method="post" action="/contact">
+    <label>
+      Subject
+      <input type="text" name="subject" required minlength="2" value="<%= values.subject %>" />
+    </label>
+
+    <label>
+      Message
+      <textarea name="message" required minlength="10"><%= values.message %></textarea>
+    </label>
+
+    <button type="submit">Send message</button>
+  </form>
+</section>
+
+<%- include("../../partials/footer") %>

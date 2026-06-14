@@ -1,0 +1,33 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Login</p>
+  <h2>Sign in</h2>
+
+  <% if (errors.length > 0) { %>
+    <div class="error-list">
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form class="form-stack" method="post" action="/login">
+    <label>
+      Email
+      <input type="email" name="email" required value="<%= values.email %>" />
+    </label>
+
+    <label>
+      Password
+      <input type="password" name="password" required minlength="8" />
+    </label>
+
+    <button type="submit">Login</button>
+  </form>
+</section>
+
+<%- include("../../partials/footer") %>

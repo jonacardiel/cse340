@@ -1,0 +1,10 @@
+.catalog-hero {
+  background: linear-gradient(135deg, #f7e6d2, #fff6eb);
+  border: 1px solid #e0c5a8;
+}
+
+.course-list,
+.faculty-list {
+  display: grid;
+  gap: 1rem;
+}

@@ -1,0 +1,15 @@
+<%- include("partials/head") %>
+<%- include("partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Dashboard</p>
+  <h2>Session readout</h2>
+  <% if (sessionData && sessionData.user) { %>
+    <p>You are logged in as <strong><%= sessionData.user.name %></strong>.</p>
+  <% } else { %>
+    <p>No user is currently logged in.</p>
+  <% } %>
+  <pre class="code-block"><%= JSON.stringify(sessionData, null, 2) %></pre>
+</section>
+
+<%- include("partials/footer") %>

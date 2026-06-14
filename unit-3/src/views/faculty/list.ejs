@@ -1,0 +1,31 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Faculty</p>
+  <h2>Faculty list</h2>
+  <form method="get" action="/faculty" class="form-stack" style="margin-bottom: 1rem;">
+    <label>
+      Sort by
+      <select name="sort">
+        <option value="name">Name</option>
+        <option value="department">Department</option>
+        <option value="title">Title</option>
+      </select>
+    </label>
+    <button type="submit">Sort</button>
+  </form>
+
+  <div class="faculty-list">
+    <% faculty.forEach((person) => { %>
+      <article class="card">
+        <h3><%= person.name %></h3>
+        <p><strong>Department:</strong> <%= person.department %></p>
+        <p><strong>Title:</strong> <%= person.title %></p>
+        <a href="/faculty/<%= person.slug %>">View profile</a>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<%- include("../partials/footer") %>

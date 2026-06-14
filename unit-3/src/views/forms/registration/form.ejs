@@ -1,0 +1,43 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Register</p>
+  <h2>Create a user account</h2>
+
+  <% if (errors.length > 0) { %>
+    <div class="error-list">
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form class="form-stack" method="post" action="/registration">
+    <label>
+      Name
+      <input type="text" name="name" required minlength="2" value="<%= values.name %>" />
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" required value="<%= values.email %>" />
+    </label>
+
+    <label>
+      Password
+      <input type="password" name="password" required minlength="8" pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" title="Password must include at least one number and one special character." />
+    </label>
+
+    <label>
+      Confirm Password
+      <input type="password" name="passwordConfirm" required minlength="8" pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" title="Password must include at least one number and one special character." />
+    </label>
+
+    <button type="submit">Create account</button>
+  </form>
+</section>
+
+<%- include("../../partials/footer") %>
