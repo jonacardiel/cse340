@@ -5,18 +5,29 @@
   <p class="eyebrow">Users</p>
   <h2>Registered accounts</h2>
 
-  <% if (users.length === 0) { %>
-    <p>No users have been saved yet.</p>
-  <% } else { %>
-    <div class="course-list">
+  <% if (users && users.length > 0) { %>
+    <div class="users-list">
       <% users.forEach((user) => { %>
-        <article class="card">
-          <h3><%= user.name %></h3>
-          <p><strong>Email:</strong> <%= user.email %></p>
-          <p><small>Created: <%= user.created_at %></small></p>
-        </article>
+        <div class="user-card">
+          <div class="user-header">
+            <h3><%= user.name %></h3>
+            <span class="user-id">ID: <%= user.id %></span>
+          </div>
+          <div class="user-details">
+            <div class="detail-item">
+              <div class="label">Email</div>
+              <div class="value"><%= user.email %></div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Registered</div>
+              <div class="value"><%= new Date(user.created_at).toLocaleDateString() %></div>
+            </div>
+          </div>
+        </div>
       <% }) %>
     </div>
+  <% } else { %>
+    <p class="no-users">No users registered yet.</p>
   <% } %>
 </section>
 

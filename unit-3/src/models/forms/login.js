@@ -1,19 +1,22 @@
+import bcrypt from "bcryptjs";
 import { query } from "../db.js";
 
-async function findUserForLogin(email) {
+// Find a user by email address for login verification.
+const findUserByEmail = async (email) => {
   const result = await query(
-    `SELECT id, name, email, password
+    `SELECT id, name, email, password, created_at
      FROM users
-     WHERE email = $1
+     WHERE LOWER(email) = LOWER($1)
      LIMIT 1`,
     [email]
   );
 
-  if (result.rows.length === 0) {
-    return {};
-  }
+  return result.rows[0] || null;
+};
 
-  return result.rows[0];
-}
+// Verify a plain text password against a stored bcrypt hash.
+const verifyPassword = async (plainPassword, hashedPassword) => {
+  return bcrypt.compare(plainPassword, hashedPassword);
+};
 
-export { findUserForLogin };
+export { findUserByEmail, verifyPassword };

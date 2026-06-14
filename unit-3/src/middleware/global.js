@@ -1,7 +1,13 @@
 const addLocalVariables = (req, res, next) => {
   res.locals.currentYear = new Date().getFullYear();
-  res.locals.user = req.session.user || null;
+  res.locals.user = req.session ? req.session.user || null : null;
   res.locals.sessionData = req.session;
+
+  // Convenience variable for UI state based on session state
+  res.locals.isLoggedIn = false;
+  if (req.session && req.session.user) {
+    res.locals.isLoggedIn = true;
+  }
   res.locals.headAssets = {
     styles: [],
     scripts: []

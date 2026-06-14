@@ -2,21 +2,18 @@ import { query } from "../db.js";
 
 async function emailExists(email) {
   const result = await query(
-    `SELECT id
-     FROM users
-     WHERE email = $1
-     LIMIT 1`,
+    `SELECT EXISTS(SELECT 1 FROM users WHERE email = $1) AS exists`,
     [email]
   );
 
-  return result.rows.length > 0;
+  return result.rows[0].exists;
 }
 
 async function saveUser(name, email, password) {
   const result = await query(
     `INSERT INTO users (name, email, password)
      VALUES ($1, $2, $3)
-     RETURNING id, name, email, created_at, updated_at`,
+     RETURNING id, name, email, created_at`,
     [name, email, password]
   );
 
@@ -25,7 +22,7 @@ async function saveUser(name, email, password) {
 
 async function getAllUsers() {
   const result = await query(
-    `SELECT id, name, email, created_at, updated_at
+    `SELECT id, name, email, created_at
      FROM users
      ORDER BY id DESC`
   );

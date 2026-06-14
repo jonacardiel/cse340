@@ -1,0 +1,16 @@
+# Real environment variables - never commit this
+.env
+
+# Dependencies
+node_modules/
+
+# pnpm
+pnpm-lock.yaml
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

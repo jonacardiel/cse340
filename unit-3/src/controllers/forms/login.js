@@ -1,94 +1,125 @@
-import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
-import { findUserForLogin } from "../../models/forms/login.js";
+import { findUserByEmail, verifyPassword } from "../../models/forms/login.js";
+import { Router } from "express";
 
+const router = Router();
+
+// Validation rules for login form
 const loginValidation = [
   body("email")
     .trim()
     .isEmail()
-    .withMessage("Please enter a valid email address."),
+    .withMessage("Please provide a valid email address")
+    .normalizeEmail(),
   body("password")
-    .notEmpty()
-    .withMessage("Password is required.")
+    .isLength({ min: 8 })
+    .withMessage("Password is required")
 ];
 
-const loginFormPage = (req, res) => {
+// Display the login form.
+const showLoginForm = (req, res) => {
   res.render("forms/login/form", {
-    title: "Login",
-    errors: [],
-    values: {
-      email: ""
-    }
+    title: "User Login"
   });
 };
 
-const submitLoginForm = [loginValidation, async (req, res) => {
+// Process login form submission.
+const processLogin = async (req, res) => {
+  // Check for validation errors
   const errors = validationResult(req);
-  const formData = {
-    email: req.body.email || ""
-  };
-
   if (!errors.isEmpty()) {
-    return res.status(400).render("forms/login/form", {
-      title: "Login",
-      errors: errors.array(),
-      values: formData
-    });
+    console.log("Login validation errors:", errors.array());
+    return res.redirect("/login");
   }
+
+  const { email, password } = req.body;
 
   try {
-    const foundUser = await findUserForLogin(req.body.email);
+    const user = await findUserByEmail(email);
 
-    if (Object.keys(foundUser).length === 0) {
-      return res.status(400).render("forms/login/form", {
-        title: "Login",
-        errors: [{ msg: "Email or password is not correct." }],
-        values: formData
-      });
+    if (!user) {
+      console.log("User not found");
+      return res.redirect("/login");
     }
 
-    const passwordMatch = await bcrypt.compare(req.body.password, foundUser.password);
+    const passwordOk = await verifyPassword(password, user.password);
 
-    if (!passwordMatch) {
-      return res.status(400).render("forms/login/form", {
-        title: "Login",
-        errors: [{ msg: "Email or password is not correct." }],
-        values: formData
-      });
+    if (!passwordOk) {
+      console.log("Invalid password");
+      return res.redirect("/login");
     }
 
-    const sessionUser = {
-      id: foundUser.id,
-      name: foundUser.name,
-      email: foundUser.email
-    };
+    // SECURITY: Remove password from user object before storing in session
+    delete user.password;
 
-    req.session.user = sessionUser;
+    req.session.user = user;
     return res.redirect("/dashboard");
   } catch (error) {
+    // Model functions do not catch errors, so handle them here
     console.error("Login error:", error);
-    return res.status(500).render("errors/500", {
-      title: "Server Error",
-      error: error.message,
-      stack: error.stack
-    });
+    return res.redirect("/login");
   }
-}];
+};
 
-const logoutUser = (req, res) => {
-  req.session.destroy((error) => {
-    if (error) {
-      console.error("Logout error:", error);
-      return res.status(500).render("errors/500", {
-        title: "Server Error",
-        error: error.message,
-        stack: error.stack
-      });
+// Handle user logout.
+// NOTE: connect.sid is the default session cookie name since we did not
+// specify a custom name when creating the session in server.js.
+const processLogout = (req, res) => {
+  // First, check if there is a session object on the request
+  if (!req.session) {
+    // If no session exists, there's nothing to destroy,
+    // so we just redirect the user back to the home page
+    return res.redirect("/");
+  }
+
+  // Call destroy() to remove this session from the store (PostgreSQL in our case)
+  req.session.destroy((err) => {
+    if (err) {
+      // If something goes wrong while removing the session from the database:
+      console.error("Error destroying session:", err);
+
+      // Clear the session cookie from the browser anyway, so the client
+      // does not keep sending an invalid session ID.
+      res.clearCookie("connect.sid");
+
+      // Since this is a practice site, we will redirect to the home page anyway.
+      return res.redirect("/");
     }
 
+    // If session destruction succeeded, clear the session cookie from the browser
     res.clearCookie("connect.sid");
-    return res.redirect("/login");
+
+    // Redirect the user to the home page
+    res.redirect("/");
   });
 };
 
-export { loginFormPage, submitLoginForm, logoutUser };
+// Display protected dashboard (requires login).
+const showDashboard = (req, res) => {
+  const user = req.session.user;
+  const sessionData = req.session;
+
+  // Security check! Ensure user and sessionData do not contain password field
+  if (user && user.password) {
+    console.error("Security error: password found in user object");
+    delete user.password;
+  }
+  if (sessionData.user && sessionData.user.password) {
+    console.error("Security error: password found in sessionData.user");
+    delete sessionData.user.password;
+  }
+
+  res.render("dashboard", {
+    title: "Dashboard",
+    user,
+    sessionData
+  });
+};
+
+// Routes
+router.get("/", showLoginForm);
+router.post("/", loginValidation, processLogin);
+
+// Export router as default, and specific functions for root-level routes
+export default router;
+export { processLogout, showDashboard };

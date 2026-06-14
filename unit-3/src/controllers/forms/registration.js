@@ -11,6 +11,9 @@ const registrationValidation = [
     .trim()
     .isEmail()
     .withMessage("Please enter a valid email address."),
+  body("emailConfirm")
+    .custom((value, { req }) => value === req.body.email)
+    .withMessage("Email addresses must match."),
   body("password")
     .isLength({ min: 8 })
     .withMessage("Password needs to be at least 8 characters long.")
@@ -23,7 +26,7 @@ const registrationValidation = [
 
 const registrationFormPage = (req, res) => {
   res.render("forms/registration/form", {
-    title: "Register",
+    title: "User Registration",
     errors: [],
     values: {
       name: "",
@@ -40,8 +43,9 @@ const submitRegistrationForm = [registrationValidation, async (req, res) => {
   };
 
   if (!errors.isEmpty()) {
+    console.log("Registration validation errors:", errors.array());
     return res.status(400).render("forms/registration/form", {
-      title: "Register",
+      title: "User Registration",
       errors: errors.array(),
       values: formData
     });
@@ -51,8 +55,9 @@ const submitRegistrationForm = [registrationValidation, async (req, res) => {
     const emailTaken = await emailExists(req.body.email);
 
     if (emailTaken) {
+      console.log("Email already registered");
       return res.status(400).render("forms/registration/form", {
-        title: "Register",
+        title: "User Registration",
         errors: [{ msg: "That email is already registered." }],
         values: formData
       });
@@ -61,7 +66,8 @@ const submitRegistrationForm = [registrationValidation, async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     await saveUser(req.body.name, req.body.email, hashedPassword);
 
-    return res.redirect("/registration/list");
+    console.log("Registration saved successfully");
+    return res.redirect("/register/list");
   } catch (error) {
     console.error("Registration error:", error);
     return res.status(500).render("errors/500", {

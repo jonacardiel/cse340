@@ -9,31 +9,26 @@ const __dirname = path.dirname(__filename);
 const enableSqlLogging = String(process.env.ENABLE_SQL_LOGGING).toLowerCase() === "true";
 const certificatePath = process.env.BYUI_CA_PATH || path.join(__dirname, "byui-ca.pem");
 
-let sslOptions = false;
-
-if (String(process.env.DB_SSL || "true").toLowerCase() !== "false") {
-  if (fs.existsSync(certificatePath)) {
-    if (enableSqlLogging) {
-      console.log("Found BYUI CA certificate:", certificatePath);
-    }
-
-    sslOptions = {
-      ca: fs.readFileSync(certificatePath, "utf8")
-    };
-  } else {
-    if (enableSqlLogging) {
-      console.log("No BYUI CA certificate was found, so SSL is using the loose setting.");
-    }
-
-    sslOptions = {
-      rejectUnauthorized: false
-    };
+let caCert = "";
+if (fs.existsSync(certificatePath)) {
+  caCert = fs.readFileSync(certificatePath, "utf8");
+  if (enableSqlLogging) {
+    console.log("Found BYUI CA certificate:", certificatePath);
   }
+} else if (enableSqlLogging) {
+  console.log("BYUI CA certificate was not found at", certificatePath);
 }
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
-  ssl: sslOptions
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 6432,
+  ssl: {
+    ca: caCert,
+    rejectUnauthorized: true,
+    checkServerIdentity: () => {
+      return undefined;
+    }
+  }
 });
 
 pool.on("error", (error) => {
@@ -48,4 +43,4 @@ async function query(sql, params = []) {
   return pool.query(sql, params);
 }
 
-export { pool, query };
+export { pool, query, caCert };

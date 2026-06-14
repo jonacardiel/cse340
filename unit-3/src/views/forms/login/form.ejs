@@ -1,33 +1,29 @@
 <%- include("../../partials/head") %>
 <%- include("../../partials/header") %>
 
-<section class="panel">
-  <p class="eyebrow">Login</p>
-  <h2>Sign in</h2>
+<main>
+  <h1><%= title %></h1>
+  <p>
+    Enter your email and password to access your account. Do not have an account? <a href="/register">Register here</a>.
+  </p>
 
-  <% if (errors.length > 0) { %>
-    <div class="error-list">
-      <ul>
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
+  <form method="POST" action="/login" class="login-form">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required placeholder="Enter your email address" />
     </div>
-  <% } %>
 
-  <form class="form-stack" method="post" action="/login">
-    <label>
-      Email
-      <input type="email" name="email" required value="<%= values.email %>" />
-    </label>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" minlength="8" required placeholder="Enter your password" />
+    </div>
 
-    <label>
-      Password
-      <input type="password" name="password" required minlength="8" />
-    </label>
+    <button type="submit">Sign In</button>
 
-    <button type="submit">Login</button>
+    <div class="form-footer">
+      <p>New user? <a href="/register">Create an account</a></p>
+    </div>
   </form>
-</section>
+</main>
 
 <%- include("../../partials/footer") %>
