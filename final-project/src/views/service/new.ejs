@@ -1,0 +1,39 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell auth-layout">
+  <section class="content-card">
+    <p class="eyebrow">Service Request</p>
+    <h1><%= vehicle.name %></h1>
+    <p>Submit a request and track progress in your dashboard history.</p>
+
+    <% if (errors.length > 0) { %>
+      <ul class="field-error-list">
+        <% for (const error of errors) { %>
+          <li><%= error.msg %></li>
+        <% } %>
+      </ul>
+    <% } %>
+
+    <form class="auth-form" method="post" action="/service-requests/new/<%= vehicle.slug %>">
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="serviceType">Service Type</label>
+          <input id="serviceType" name="serviceType" type="text" value="<%= values.serviceType %>" placeholder="Oil change, inspection, brake check...">
+        </div>
+        <div class="field-group">
+          <label for="requestedDate">Preferred Date</label>
+          <input id="requestedDate" name="requestedDate" type="date" value="<%= values.requestedDate %>">
+        </div>
+        <div class="field-group field-group-full">
+          <label for="customerNotes">Notes</label>
+          <textarea id="customerNotes" name="customerNotes" rows="4" placeholder="Tell us anything technicians should know."><%= values.customerNotes %></textarea>
+        </div>
+      </div>
+      <div class="inline-actions">
+        <button class="button" type="submit">Submit Request</button>
+        <a class="button button-secondary" href="/inventory/<%= vehicle.slug %>">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>
+<%- include("../partials/footer") %>

@@ -1,0 +1,55 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell content-layout">
+  <section class="content-card">
+    <p class="eyebrow">Owner Controls</p>
+    <h1>Manage Vehicle Categories</h1>
+    <p>Add, update, and remove category records used by inventory browsing.</p>
+  </section>
+
+  <section class="content-card">
+    <h2>Add Category</h2>
+    <% if (errors.length > 0) { %>
+      <ul class="field-error-list">
+        <% for (const error of errors) { %>
+          <li><%= error.msg %></li>
+        <% } %>
+      </ul>
+    <% } %>
+    <form class="auth-form" method="post" action="/admin/categories">
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" value="<%= values.name %>">
+        </div>
+        <div class="field-group field-group-full">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="3"><%= values.description %></textarea>
+        </div>
+      </div>
+      <button class="button" type="submit">Create Category</button>
+    </form>
+  </section>
+
+  <% for (const category of categories) { %>
+    <section class="content-card request-card">
+      <form class="auth-form" method="post" action="/admin/categories/<%= category.id %>/edit">
+        <div class="form-grid">
+          <div class="field-group">
+            <label for="name-<%= category.id %>">Name</label>
+            <input id="name-<%= category.id %>" name="name" type="text" value="<%= category.name %>">
+          </div>
+          <div class="field-group field-group-full">
+            <label for="description-<%= category.id %>">Description</label>
+            <textarea id="description-<%= category.id %>" name="description" rows="3"><%= category.description || "" %></textarea>
+          </div>
+        </div>
+        <div class="inline-actions">
+          <button class="button" type="submit">Save Category</button>
+          <button class="pill" formaction="/admin/categories/<%= category.id %>/delete" formmethod="post" type="submit">Delete</button>
+        </div>
+      </form>
+    </section>
+  <% } %>
+</main>
+<%- include("../partials/footer") %>

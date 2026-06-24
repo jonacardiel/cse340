@@ -1,0 +1,593 @@
+/* ==========================================================================
+   1. DESIGN TOKENS & VARIABLE SYSTEM
+   ========================================================================== */
+:root {
+  --bg-primary: #fcfcfd;
+  --bg-secondary: #f4f5f7;
+  --surface: #ffffff;
+  --border-color: #e2e8f0;
+
+  --text-main: #1a1e26;
+  --text-muted: #626d7f;
+  --text-on-accent: #ffffff;
+
+  --accent-color: #dc2626;
+  --accent-hover: #b91c1c;
+  --dark-hero: #0f172a;
+
+  --radius-sharp: 2px;
+  --radius-smooth: 6px;
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* ==========================================================================
+   2. RESET & BASE LAYOUT
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-shell,
+.main-content {
+  max-width: 1200px;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+}
+
+/* ==========================================================================
+   3. GLOBAL NAVIGATION (HEADER)
+   ========================================================================== */
+.site-header {
+  background-color: var(--dark-hero);
+  color: #ffffff;
+  padding: 1.25rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.site-header .eyebrow {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.brand-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+}
+
+.brand-logo span {
+  color: var(--accent-color);
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  opacity: 1;
+  color: var(--accent-color);
+}
+
+/* ==========================================================================
+   4. LAYOUT GRIDS & CARDS
+   ========================================================================== */
+.hero-layout,
+.dashboard-panels,
+.inventory-layout,
+.detail-columns {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero-layout {
+  grid-template-columns: 2fr 1fr;
+}
+
+.inventory-layout {
+  grid-template-columns: 320px 1fr;
+}
+
+.dashboard-panels {
+  grid-template-columns: 1fr 1fr;
+}
+
+.detail-columns {
+  grid-template-columns: 1fr 320px;
+}
+
+.content-layout,
+.detail-layout,
+.dashboard-layout,
+.auth-layout {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.auth-layout {
+  max-width: 860px;
+}
+
+.content-card,
+.hero-card,
+.status-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-smooth);
+  box-shadow: var(--shadow-subtle);
+  padding: 1.5rem;
+}
+
+.hero-card h1,
+.content-card h1 {
+  font-size: clamp(2rem, 5vw, 3.3rem);
+  line-height: 1.05;
+  margin-top: 0.3rem;
+}
+
+.status-card ul {
+  margin-left: 1.2rem;
+  color: var(--text-muted);
+}
+
+.lede,
+.muted,
+.field-help,
+.auth-note,
+.dashboard-copy {
+  color: var(--text-muted);
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 0;
+}
+
+.vehicle-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-smooth);
+  overflow: hidden;
+  box-shadow: var(--shadow-subtle);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.vehicle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-image-wrapper {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background-color: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.vehicle-card:hover .card-image-wrapper img {
+  transform: scale(1.03);
+}
+
+.card-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: var(--accent-color);
+  color: var(--text-on-accent);
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--radius-sharp);
+}
+
+.card-details,
+.vehicle-card-copy {
+  padding: 1.25rem 1.4rem;
+}
+
+.card-meta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.card-specs {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-price,
+.price {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.vehicle-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+}
+
+.vehicle-gallery img {
+  height: 100%;
+  min-height: 320px;
+  object-fit: cover;
+  border-radius: var(--radius-smooth);
+}
+
+.vehicle-specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.vehicle-specs dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.vehicle-specs dd {
+  margin-top: 0.2rem;
+}
+
+.review-card,
+.stat-card,
+.request-card {
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-smooth);
+  background: var(--surface);
+}
+
+.request-card,
+.admin-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 2rem;
+}
+
+/* ==========================================================================
+   5. COMPONENT ELEMENTS (BUTTONS & FORMS)
+   ========================================================================== */
+.btn-action,
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--text-main);
+  color: #ffffff;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--text-main);
+  border-radius: var(--radius-sharp);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-action:hover,
+.button:hover {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.button-secondary {
+  background: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+.button-secondary:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: var(--surface);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sharp);
+  background: var(--surface);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.pill-active {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  border-color: var(--accent-color);
+}
+
+.hero-actions,
+.auth-actions,
+.inline-actions,
+.category-pills {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.inline-actions form {
+  margin: 0;
+}
+
+.form-group,
+.field-group {
+  margin-bottom: 1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.form-label,
+.field-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.form-input,
+.form-textarea,
+.form-select,
+.field-group input,
+.field-group textarea,
+.field-group select,
+.inline-actions select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sharp);
+  color: var(--text-main);
+  transition: border-color var(--transition-fast);
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus,
+.field-group input:focus,
+.field-group textarea:focus,
+.field-group select:focus,
+.inline-actions select:focus {
+  outline: none;
+  border-color: var(--text-main);
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field-group-full {
+  grid-column: 1 / -1;
+}
+
+.field-error-list {
+  margin-left: 1rem;
+  color: #9b1c1c;
+}
+
+.success-banner {
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sharp);
+  background: rgba(24, 128, 56, 0.15);
+  border: 1px solid rgba(24, 128, 56, 0.35);
+  color: #125126;
+}
+
+/* ==========================================================================
+   6. USER INTERACTIONS (DASHBOARDS & MESSAGES)
+   ========================================================================== */
+.workflow-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: var(--radius-sharp);
+}
+
+.status-submitted {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.status-progress {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-completed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* ==========================================================================
+   7. FOOTER
+   ========================================================================== */
+.site-footer {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   8. ACCESSIBILITY & RESPONSIVENESS
+   ========================================================================== */
+@media (max-width: 900px) {
+  .hero-layout,
+  .inventory-layout,
+  .vehicle-hero,
+  .detail-columns,
+  .dashboard-panels,
+  .dashboard-stats,
+  .form-grid,
+  .vehicle-specs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    padding: 1rem;
+  }
+
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .page-shell,
+  .main-content {
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+  }
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}

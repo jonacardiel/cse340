@@ -1,0 +1,85 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell detail-layout">
+  <section class="vehicle-hero content-card">
+    <div class="vehicle-gallery">
+      <img src="<%= vehicle.images[0]?.image_url %>" alt="<%= vehicle.images[0]?.alt_text || vehicle.name %>">
+    </div>
+    <div class="vehicle-summary">
+      <p class="eyebrow"><%= vehicle.category_name %></p>
+      <h1><%= vehicle.name %></h1>
+      <p class="price">$<%= Number(vehicle.price).toLocaleString() %></p>
+      <dl class="vehicle-specs">
+        <div><dt>Year</dt><dd><%= vehicle.year %></dd></div>
+        <div><dt>Mileage</dt><dd><%= Number(vehicle.mileage).toLocaleString() %></dd></div>
+        <div><dt>Transmission</dt><dd><%= vehicle.transmission %></dd></div>
+        <div><dt>Fuel</dt><dd><%= vehicle.fuel_type %></dd></div>
+        <div><dt>Drivetrain</dt><dd><%= vehicle.drivetrain %></dd></div>
+        <div><dt>Color</dt><dd><%= vehicle.color %></dd></div>
+      </dl>
+      <p><%= vehicle.description %></p>
+    </div>
+  </section>
+
+  <section class="detail-columns">
+    <article class="content-card">
+      <p class="eyebrow">Customer Reviews</p>
+      <h2>Current feedback</h2>
+      <% if (isLoggedIn && user.role === "customer") { %>
+        <form class="auth-form" method="post" action="/inventory/<%= vehicle.slug %>/reviews">
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="rating">Rating</label>
+              <select id="rating" name="rating">
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Good</option>
+                <option value="3">3 - Fair</option>
+                <option value="2">2 - Needs Work</option>
+                <option value="1">1 - Poor</option>
+              </select>
+            </div>
+            <div class="field-group field-group-full">
+              <label for="reviewText">Your Review</label>
+              <textarea id="reviewText" name="reviewText" rows="3" placeholder="Share your experience with this vehicle."></textarea>
+            </div>
+          </div>
+          <button class="button" type="submit">Submit Review</button>
+        </form>
+      <% } else if (!isLoggedIn) { %>
+        <p><a href="/login">Sign in</a> to leave a review.</p>
+      <% } %>
+      <% if (vehicle.reviews.length === 0) { %>
+        <p>No reviews yet. Logged-in customers will be able to add them next.</p>
+      <% } %>
+      <% for (const review of vehicle.reviews) { %>
+        <div class="review-card">
+          <strong><%= review.first_name %> <%= review.last_name.charAt(0) %>.</strong>
+          <span><%= review.rating %>/5</span>
+          <p><%= review.review_text %></p>
+          <% if (isLoggedIn && user.role === "customer" && Number(review.user_id) === Number(user.id)) { %>
+            <div class="inline-actions">
+              <a class="pill" href="/reviews/<%= review.id %>/edit">Edit</a>
+              <form method="post" action="/reviews/<%= review.id %>/delete">
+                <button class="pill" type="submit">Delete</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </article>
+
+    <article class="content-card">
+      <p class="eyebrow">Service Workflow</p>
+      <h2>Service request system</h2>
+      <p>Customers can submit a request tied to this vehicle, then track status and service notes from their account area.</p>
+      <% if (isLoggedIn && user.role === "customer") { %>
+        <div class="inline-actions">
+          <a class="button" href="/service-requests/new/<%= vehicle.slug %>">Request Service</a>
+          <a class="button button-secondary" href="/service-requests/mine">My Service Requests</a>
+        </div>
+      <% } %>
+      <a class="button" href="/inventory">Back to inventory</a>
+    </article>
+  </section>
+</main>
+<%- include("../partials/footer") %>

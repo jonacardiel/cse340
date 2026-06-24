@@ -1,0 +1,40 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell content-layout">
+  <section class="content-card">
+    <p class="eyebrow">Employee / Owner</p>
+    <h1>Contact Messages</h1>
+    <p>Review incoming customer messages and track response status.</p>
+  </section>
+
+  <% if (messages.length === 0) { %>
+    <section class="content-card">
+      <p>No contact messages yet.</p>
+    </section>
+  <% } %>
+
+  <% for (const message of messages) { %>
+    <section class="content-card request-card">
+      <div class="request-header">
+        <div>
+          <p class="eyebrow"><%= message.status %></p>
+          <h2><%= message.subject %></h2>
+          <p><%= message.full_name %> · <%= message.email %></p>
+        </div>
+        <div>
+          <p><%= new Date(message.created_at).toLocaleString() %></p>
+        </div>
+      </div>
+      <p><%= message.message %></p>
+      <form class="inline-actions" method="post" action="/contact/<%= message.id %>/status">
+        <select name="status">
+          <option value="Received" <%= message.status === "Received" ? "selected" : "" %>>Received</option>
+          <option value="Replied" <%= message.status === "Replied" ? "selected" : "" %>>Replied</option>
+          <option value="Closed" <%= message.status === "Closed" ? "selected" : "" %>>Closed</option>
+        </select>
+        <button class="button" type="submit">Update Status</button>
+      </form>
+    </section>
+  <% } %>
+</main>
+<%- include("../partials/footer") %>

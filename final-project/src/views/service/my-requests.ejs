@@ -1,0 +1,50 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell content-layout">
+  <section class="content-card">
+    <p class="eyebrow">Customer Workflow</p>
+    <h1>My Service Requests</h1>
+    <p>Track each request from submission through completion.</p>
+  </section>
+
+  <% if (requests.length === 0) { %>
+    <section class="content-card">
+      <p>No requests yet. Start from any vehicle detail page.</p>
+      <a class="button" href="/inventory">Browse Inventory</a>
+    </section>
+  <% } %>
+
+  <% for (const request of requests) { %>
+    <section class="content-card request-card">
+      <div class="request-header">
+        <div>
+          <p class="eyebrow"><%= request.status %></p>
+          <h2><%= request.service_type %></h2>
+          <p><a href="/inventory/<%= request.vehicle_slug %>"><%= request.vehicle_name %></a></p>
+        </div>
+        <div>
+          <p>Preferred date: <%= request.requested_date ? new Date(request.requested_date).toLocaleDateString() : "Not set" %></p>
+          <p>Submitted: <%= new Date(request.created_at).toLocaleString() %></p>
+        </div>
+      </div>
+      <p><strong>Your note:</strong> <%= request.customer_notes %></p>
+
+      <h3>Request History</h3>
+      <% const requestNotes = notesByRequestId[request.id] || []; %>
+      <% if (requestNotes.length === 0) { %>
+        <p class="muted">No status notes yet.</p>
+      <% } %>
+      <% for (const note of requestNotes) { %>
+        <div class="review-card">
+          <p class="eyebrow"><%= note.note_type %></p>
+          <p><%= note.note_text %></p>
+          <p class="muted">
+            <%= note.first_name ? `${note.first_name} ${note.last_name?.charAt(0) || ""}.` : "System" %>
+            · <%= new Date(note.created_at).toLocaleString() %>
+          </p>
+        </div>
+      <% } %>
+    </section>
+  <% } %>
+</main>
+<%- include("../partials/footer") %>

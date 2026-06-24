@@ -1,0 +1,22 @@
+<%- include("partials/head") %>
+<%- include("partials/header") %>
+<main class="page-shell hero-layout">
+  <section class="hero-card">
+    <p class="eyebrow">Used Car Dealership</p>
+    <h1><%= hero.heading %></h1>
+    <p class="lede"><%= hero.subheading %></p>
+    <div class="hero-actions">
+      <a class="button" href="/inventory">Browse Inventory</a>
+      <a class="button button-secondary" href="/about">Project Scope</a>
+    </div>
+  </section>
+  <section class="status-card">
+    <h2>Implementation Status</h2>
+    <ul>
+      <li>Project scaffold and shared layout are in place.</li>
+      <li>Authentication, inventory, reviews, and service workflow come next.</li>
+      <li>PostgreSQL schema and seeded roles will be added in the next pass.</li>
+    </ul>
+  </section>
+</main>
+<%- include("partials/footer") %>

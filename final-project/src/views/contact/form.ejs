@@ -1,0 +1,44 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell auth-layout">
+  <section class="content-card">
+    <p class="eyebrow">Contact Driven Auto</p>
+    <h1>Send us a message</h1>
+    <p>Questions about inventory, appointments, or account support can be submitted here.</p>
+
+    <% if (successMessage) { %>
+      <p class="success-banner"><%= successMessage %></p>
+    <% } %>
+
+    <% if (errors.length > 0) { %>
+      <ul class="field-error-list">
+        <% for (const error of errors) { %>
+          <li><%= error.msg %></li>
+        <% } %>
+      </ul>
+    <% } %>
+
+    <form class="auth-form" method="post" action="/contact">
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" name="fullName" type="text" value="<%= values.fullName %>">
+        </div>
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" value="<%= values.email %>">
+        </div>
+        <div class="field-group field-group-full">
+          <label for="subject">Subject</label>
+          <input id="subject" name="subject" type="text" value="<%= values.subject %>">
+        </div>
+        <div class="field-group field-group-full">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5"><%= values.message %></textarea>
+        </div>
+      </div>
+      <button class="button" type="submit">Send Message</button>
+    </form>
+  </section>
+</main>
+<%- include("../partials/footer") %>

@@ -1,0 +1,53 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell auth-layout">
+  <section class="content-card">
+    <p class="eyebrow">Customer Registration</p>
+    <h1>Create a customer account</h1>
+    <p class="auth-note">New registrations default to the customer role. Owner and employee accounts are seeded and later managed from the dashboard.</p>
+
+    <% if (!databaseReady) { %>
+      <p class="field-help">Set DB_URL and seed the database before testing registration.</p>
+    <% } %>
+
+    <% if (errors.length > 0) { %>
+      <ul class="field-error-list">
+        <% for (const error of errors) { %>
+          <li><%= error.msg %></li>
+        <% } %>
+      </ul>
+    <% } %>
+
+    <form class="auth-form" method="post" action="/register">
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="firstName">First Name</label>
+          <input id="firstName" name="firstName" type="text" autocomplete="given-name" value="<%= values.firstName %>">
+        </div>
+        <div class="field-group">
+          <label for="lastName">Last Name</label>
+          <input id="lastName" name="lastName" type="text" autocomplete="family-name" value="<%= values.lastName %>">
+        </div>
+        <div class="field-group field-group-full">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" value="<%= values.email %>">
+        </div>
+        <div class="field-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password">
+          <span class="field-help">Use at least 8 characters with a number and special character.</span>
+        </div>
+        <div class="field-group">
+          <label for="passwordConfirm">Confirm Password</label>
+          <input id="passwordConfirm" name="passwordConfirm" type="password" autocomplete="new-password">
+        </div>
+      </div>
+
+      <div class="auth-actions">
+        <button class="button" type="submit">Create Account</button>
+        <a class="button button-secondary" href="/login">Have an account?</a>
+      </div>
+    </form>
+  </section>
+</main>
+<%- include("../partials/footer") %>

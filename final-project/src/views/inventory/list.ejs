@@ -1,0 +1,54 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell inventory-layout">
+  <section class="content-card inventory-sidebar">
+    <p class="eyebrow">Browse Inventory</p>
+    <h1><%= activeCategory ? activeCategory.name : "Available Vehicles" %></h1>
+    <% if (!databaseReady) { %>
+      <p>Set DB_URL and restart the app to load seeded dealership inventory from PostgreSQL.</p>
+    <% } else { %>
+      <p>Filter by category and open a detail page for each vehicle.</p>
+      <div class="category-pills">
+        <a class="pill <%= activeCategory ? "" : "pill-active" %>" href="/inventory">All</a>
+        <% for (const category of categories) { %>
+          <a class="pill <%= activeCategory && activeCategory.slug === category.slug ? "pill-active" : "" %>" href="/inventory/category/<%= category.slug %>"><%= category.name %></a>
+        <% } %>
+      </div>
+    <% } %>
+  </section>
+
+  <section class="inventory-grid">
+    <% if (databaseReady && vehicles.length === 0) { %>
+      <article class="content-card">
+        <h2>No vehicles in this category yet.</h2>
+        <p>The owner dashboard will populate and manage these records.</p>
+      </article>
+    <% } %>
+
+    <% for (const vehicle of vehicles) { %>
+      <article class="vehicle-card">
+        <div class="card-image-wrapper">
+          <img src="<%= vehicle.primary_image %>" alt="<%= vehicle.name %>">
+          <% if (vehicle.is_featured) { %>
+            <span class="card-badge">Featured</span>
+          <% } %>
+        </div>
+        <div class="card-details">
+          <p class="card-meta"><%= vehicle.category_name || "Inventory" %></p>
+          <h2 class="card-title"><a href="/inventory/<%= vehicle.slug %>"><%= vehicle.name %></a></h2>
+          <div class="card-specs">
+            <span><%= vehicle.year %></span>
+            <span><%= Number(vehicle.mileage).toLocaleString() %> mi</span>
+            <span><%= vehicle.drivetrain %></span>
+          </div>
+          <div class="card-price-row">
+            <p class="card-price">$<%= Number(vehicle.price).toLocaleString() %></p>
+            <span class="muted"><%= vehicle.average_rating %>/5</span>
+          </div>
+          <p class="muted"><%= vehicle.review_count %> review(s) · <%= vehicle.transmission %></p>
+        </div>
+      </article>
+    <% } %>
+  </section>
+</main>
+<%- include("../partials/footer") %>

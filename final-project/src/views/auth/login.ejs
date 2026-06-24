@@ -1,0 +1,41 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell auth-layout">
+  <section class="content-card">
+    <p class="eyebrow">Account Access</p>
+    <h1>Sign in to Driven Auto</h1>
+    <p class="auth-note">Owner, employee, and customer sessions all use the same login flow.</p>
+
+    <% if (!databaseReady) { %>
+      <p class="field-help">Set DB_URL and seed the database before testing authentication.</p>
+    <% } %>
+
+    <% if (errors.length > 0) { %>
+      <ul class="field-error-list">
+        <% for (const error of errors) { %>
+          <li><%= error.msg %></li>
+        <% } %>
+      </ul>
+    <% } %>
+
+    <form class="auth-form" method="post" action="/login">
+      <div class="field-group field-group-full">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" value="<%= values.email %>">
+      </div>
+
+      <div class="field-group field-group-full">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password">
+      </div>
+
+      <div class="auth-actions">
+        <button class="button" type="submit">Sign In</button>
+        <a class="button button-secondary" href="/register">Create Account</a>
+      </div>
+    </form>
+
+    <p class="field-help">Seeded test accounts use password P@$$w0rd! once DB setup is enabled.</p>
+  </section>
+</main>
+<%- include("../partials/footer") %>

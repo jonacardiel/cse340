@@ -1,0 +1,61 @@
+<%- include("partials/head") %>
+<%- include("partials/header") %>
+<main class="page-shell dashboard-layout">
+  <section class="content-card">
+    <p class="eyebrow"><%= user.role %> dashboard</p>
+    <h1>Welcome back, <%= user.firstName %>.</h1>
+    <p class="dashboard-copy">This is the starting dashboard shell for role-based management. Customer accounts will manage reviews and service requests here. Employee and owner roles will expand into moderation and inventory controls next.</p>
+  </section>
+
+  <section class="dashboard-stats">
+    <% for (const stat of dashboard.stats) { %>
+      <article class="stat-card">
+        <span><%= stat.label %></span>
+        <strong><%= stat.value %></strong>
+      </article>
+    <% } %>
+  </section>
+
+  <section class="dashboard-panels">
+    <article class="content-card">
+      <p class="eyebrow">Current Status</p>
+      <h2>What this role will control</h2>
+      <% if (user.role === "customer") { %>
+        <ul>
+          <li>Leave, edit, and delete your own vehicle reviews.</li>
+          <li>Submit service requests tied to your vehicle.</li>
+          <li>Track workflow status history for each request.</li>
+        </ul>
+        <div class="inline-actions">
+          <a class="button" href="/service-requests/mine">My Service Requests</a>
+          <a class="button button-secondary" href="/inventory">Find Vehicle</a>
+        </div>
+      <% } else { %>
+        <ul>
+          <li>Review and moderate customer content.</li>
+          <li>Manage vehicle records and availability.</li>
+          <li>Respond to service requests and contact submissions.</li>
+        </ul>
+        <div class="inline-actions">
+          <a class="button" href="/service-requests/manage">Manage Service Queue</a>
+          <a class="button button-secondary" href="/admin/vehicles">Vehicle Admin</a>
+          <a class="button button-secondary" href="/contact/manage">Contact Inbox</a>
+          <% if (user.role === "owner") { %>
+            <a class="button button-secondary" href="/admin/categories">Category Admin</a>
+          <% } %>
+        </div>
+      <% } %>
+    </article>
+
+    <article class="content-card">
+      <p class="eyebrow">Implementation Progress</p>
+      <h2>Active build status</h2>
+      <p>Review submission and service request status workflows are now wired. Next, this dashboard will include owner category and vehicle management plus contact response tools.</p>
+      <div class="auth-actions">
+        <a class="button" href="/inventory">View Inventory</a>
+        <a class="button button-secondary" href="/logout">Sign Out</a>
+      </div>
+    </article>
+  </section>
+</main>
+<%- include("partials/footer") %>

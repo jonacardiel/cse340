@@ -1,0 +1,36 @@
+<%- include("../partials/head") %>
+<%- include("../partials/header") %>
+<main class="page-shell auth-layout">
+  <section class="content-card">
+    <p class="eyebrow">Edit Review</p>
+    <h1><%= review.vehicle_name %></h1>
+
+    <% if (errors.length > 0) { %>
+      <ul class="field-error-list">
+        <% for (const error of errors) { %>
+          <li><%= error.msg %></li>
+        <% } %>
+      </ul>
+    <% } %>
+
+    <form class="auth-form" method="post" action="/reviews/<%= review.id %>/edit">
+      <div class="field-group">
+        <label for="rating">Rating</label>
+        <select id="rating" name="rating">
+          <% for (let value = 5; value >= 1; value -= 1) { %>
+            <option value="<%= value %>" <%= Number(review.rating) === value ? "selected" : "" %>><%= value %></option>
+          <% } %>
+        </select>
+      </div>
+      <div class="field-group">
+        <label for="reviewText">Review</label>
+        <textarea id="reviewText" name="reviewText" rows="5"><%= review.review_text %></textarea>
+      </div>
+      <div class="inline-actions">
+        <button class="button" type="submit">Save Changes</button>
+        <a class="button button-secondary" href="/inventory/<%= review.vehicle_slug %>">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>
+<%- include("../partials/footer") %>
