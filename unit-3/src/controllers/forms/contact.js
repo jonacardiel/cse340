@@ -1,21 +1,9 @@
-import { body, validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import { createContactForm, getAllContactForms } from "../../models/forms/contact.js";
-
-const contactValidation = [
-  body("subject")
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("Subject needs to be at least 2 characters long."),
-  body("message")
-    .trim()
-    .isLength({ min: 10 })
-    .withMessage("Message needs to be at least 10 characters long.")
-];
 
 const contactFormPage = (req, res) => {
   res.render("forms/contact/form", {
     title: "Contact Us",
-    errors: [],
     values: {
       subject: "",
       message: ""
@@ -23,34 +11,28 @@ const contactFormPage = (req, res) => {
   });
 };
 
-const submitContactForm = [contactValidation, async (req, res) => {
+const submitContactForm = async (req, res) => {
   const errors = validationResult(req);
-  const formData = {
-    subject: req.body.subject || "",
-    message: req.body.message || ""
-  };
 
   if (!errors.isEmpty()) {
-    console.log("Contact form validation errors:", errors.array());
-    return res.status(400).render("forms/contact/form", {
-      title: "Contact Us",
-      errors: errors.array(),
-      values: formData
+    errors.array().forEach((error) => {
+      req.flash("error", error.msg);
     });
+
+    return res.redirect("/contact");
   }
 
   try {
-    await createContactForm(formData.subject, formData.message);
-    return res.redirect("/contact/responses");
+    const { subject, message } = req.body;
+    await createContactForm(subject, message);
+    req.flash("success", "Thank you for contacting us! We will respond soon.");
+    return res.redirect("/contact");
   } catch (error) {
     console.error("Contact form save error:", error);
-    return res.status(500).render("errors/500", {
-      title: "Server Error",
-      error: error.message,
-      stack: error.stack
-    });
+    req.flash("error", "Unable to submit your message. Please try again later.");
+    return res.redirect("/contact");
   }
-}];
+};
 
 const contactResponsesPage = async (req, res) => {
   try {

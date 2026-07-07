@@ -1,3 +1,38 @@
 .faculty-list .card {
   border-left: 5px solid #7d4b28;
 }
+
+.faculty-card {
+  position: relative;
+}
+
+.faculty-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 7px;
+  border-radius: 10px;
+  background: url("https://placehold.co/480") center / cover no-repeat;
+}
+
+.faculty-detail {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 220px 1fr;
+  align-items: start;
+}
+
+.faculty-photo-detail {
+  max-width: 220px;
+}
+
+@media (max-width: 720px) {
+  .faculty-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .faculty-photo-detail {
+    max-width: 100%;
+  }
+}

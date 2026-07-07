@@ -85,6 +85,44 @@ a {
   margin-bottom: 2rem;
 }
 
+.flash-messages {
+  width: min(1000px, calc(100% - 2rem));
+  margin: 0 auto 1rem;
+}
+
+.flash {
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+  border-left: 4px solid;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.flash.success {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.flash.error {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+
+.flash.warning {
+  background-color: #fff3cd;
+  border-color: #ffc107;
+  color: #856404;
+}
+
+.flash.info {
+  background-color: #d1ecf1;
+  border-color: #17a2b8;
+  color: #0c5460;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));

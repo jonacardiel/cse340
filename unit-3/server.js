@@ -6,6 +6,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import routes from "./src/controllers/routes.js";
 import { addLocalVariables } from "./src/middleware/global.js";
+import flash from "./src/middleware/flash.js";
 import { setupDatabase } from "./src/models/setup.js";
 import { caCert } from "./src/models/db.js";
 import { startSessionCleanup } from "./src/utils/session-cleanup.js";
@@ -52,6 +53,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(addLocalVariables);
+app.use(flash);
 app.use("/", routes);
 
 app.use((req, res, next) => {

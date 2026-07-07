@@ -1,11 +1,24 @@
 import { Router } from "express";
 import { requireLogin } from "../middleware/auth.js";
+import {
+  contactValidation,
+  registrationValidation,
+  loginValidation,
+  updateAccountValidation
+} from "../middleware/validation/forms.js";
 import { homePage, aboutPage } from "./index.js";
 import { catalogListPage, catalogDetailPage } from "./catalog/catalog.js";
 import { facultyListPage, facultyDetailPage } from "./faculty/faculty.js";
 import { contactFormPage, submitContactForm, contactResponsesPage } from "./forms/contact.js";
-import { registrationFormPage, submitRegistrationForm, registrationListPage } from "./forms/registration.js";
-import loginRoutes, { processLogout, showDashboard } from "./forms/login.js";
+import {
+  registrationFormPage,
+  submitRegistrationForm,
+  registrationListPage,
+  showEditAccountForm,
+  processEditAccount,
+  processDeleteAccount
+} from "./forms/registration.js";
+import { showLoginForm, processLogin, processLogout, showDashboard } from "./forms/login.js";
 
 const router = Router();
 
@@ -58,15 +71,18 @@ router.get("/faculty", facultyListPage);
 router.get("/faculty/:slugId", facultyDetailPage);
 
 router.get("/contact", contactFormPage);
-router.post("/contact", submitContactForm);
+router.post("/contact", contactValidation, submitContactForm);
 router.get("/contact/responses", contactResponsesPage);
 
 router.get("/register", registrationFormPage);
-router.post("/register", submitRegistrationForm);
+router.post("/register", registrationValidation, submitRegistrationForm);
 router.get("/register/list", registrationListPage);
+router.get("/register/:id/edit", requireLogin, showEditAccountForm);
+router.post("/register/:id/edit", requireLogin, updateAccountValidation, processEditAccount);
+router.post("/register/:id/delete", requireLogin, processDeleteAccount);
 
-// Login routes (form and submission)
-router.use("/login", loginRoutes);
+router.get("/login", showLoginForm);
+router.post("/login", loginValidation, processLogin);
 
 // Authentication-related routes at root level
 router.get("/logout", processLogout);

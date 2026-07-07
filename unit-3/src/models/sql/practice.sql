@@ -19,3 +19,53 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS roles (
+  id SERIAL PRIMARY KEY,
+  role_name VARCHAR(50) UNIQUE NOT NULL,
+  role_description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_name = 'users'
+      AND column_name = 'role_id'
+  ) THEN
+    ALTER TABLE users
+      ADD COLUMN role_id INTEGER REFERENCES roles(id);
+  END IF;
+END $$;
+
+INSERT INTO roles (role_name, role_description)
+VALUES
+  ('user', 'Standard user with basic access'),
+  ('admin', 'Administrator with full system access')
+ON CONFLICT (role_name) DO NOTHING;
+
+DO $$
+DECLARE
+  user_role_id INTEGER;
+BEGIN
+  SELECT id INTO user_role_id FROM roles WHERE role_name = 'user';
+
+  IF user_role_id IS NOT NULL THEN
+    EXECUTE format('ALTER TABLE users ALTER COLUMN role_id SET DEFAULT %s', user_role_id);
+  END IF;
+END $$;
+
+DO $$
+DECLARE
+  user_role_id INTEGER;
+BEGIN
+  SELECT id INTO user_role_id FROM roles WHERE role_name = 'user';
+
+  IF user_role_id IS NOT NULL THEN
+    UPDATE users
+      SET role_id = user_role_id
+      WHERE role_id IS NULL;
+  END IF;
+END $$;

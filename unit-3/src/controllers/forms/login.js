@@ -1,20 +1,5 @@
-import { body, validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import { findUserByEmail, verifyPassword } from "../../models/forms/login.js";
-import { Router } from "express";
-
-const router = Router();
-
-// Validation rules for login form
-const loginValidation = [
-  body("email")
-    .trim()
-    .isEmail()
-    .withMessage("Please provide a valid email address")
-    .normalizeEmail(),
-  body("password")
-    .isLength({ min: 8 })
-    .withMessage("Password is required")
-];
 
 // Display the login form.
 const showLoginForm = (req, res) => {
@@ -28,7 +13,10 @@ const processLogin = async (req, res) => {
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log("Login validation errors:", errors.array());
+    errors.array().forEach((error) => {
+      req.flash("error", error.msg);
+    });
+
     return res.redirect("/login");
   }
 
@@ -38,14 +26,14 @@ const processLogin = async (req, res) => {
     const user = await findUserByEmail(email);
 
     if (!user) {
-      console.log("User not found");
+      req.flash("error", "Invalid email or password");
       return res.redirect("/login");
     }
 
     const passwordOk = await verifyPassword(password, user.password);
 
     if (!passwordOk) {
-      console.log("Invalid password");
+      req.flash("error", "Invalid email or password");
       return res.redirect("/login");
     }
 
@@ -53,10 +41,12 @@ const processLogin = async (req, res) => {
     delete user.password;
 
     req.session.user = user;
+    req.flash("success", `Welcome back, ${user.name}!`);
     return res.redirect("/dashboard");
   } catch (error) {
     // Model functions do not catch errors, so handle them here
     console.error("Login error:", error);
+    req.flash("error", "Unable to log in right now. Please try again later.");
     return res.redirect("/login");
   }
 };
@@ -116,10 +106,4 @@ const showDashboard = (req, res) => {
   });
 };
 
-// Routes
-router.get("/", showLoginForm);
-router.post("/", loginValidation, processLogin);
-
-// Export router as default, and specific functions for root-level routes
-export default router;
-export { processLogout, showDashboard };
+export { showLoginForm, processLogin, processLogout, showDashboard };

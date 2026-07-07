@@ -10,12 +10,12 @@
   <form method="POST" action="/login" class="login-form">
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required placeholder="Enter your email address" />
+      <input type="email" id="email" name="email" maxlength="255" required placeholder="Enter your email address" />
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" minlength="8" required placeholder="Enter your password" />
+      <input type="password" id="password" name="password" minlength="8" maxlength="128" required placeholder="Enter your password" />
     </div>
 
     <button type="submit">Sign In</button>

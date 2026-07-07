@@ -8,8 +8,25 @@ const requireLogin = (req, res, next) => {
     next();
   } else {
     // User is not authenticated - redirect to login
+    req.flash("error", "You must be logged in to access this page.");
     res.redirect("/login");
   }
 };
 
-export { requireLogin };
+const requireRole = (roleName) => {
+  return (req, res, next) => {
+    if (!req.session || !req.session.user) {
+      req.flash("error", "You must be logged in to access this page.");
+      return res.redirect("/login");
+    }
+
+    if (req.session.user.roleName !== roleName) {
+      req.flash("error", "You do not have permission to access this page.");
+      return res.redirect("/");
+    }
+
+    next();
+  };
+};
+
+export { requireLogin, requireRole };

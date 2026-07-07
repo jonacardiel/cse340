@@ -1,0 +1,24 @@
+<%- include("../../partials/head") %>
+<%- include("../../partials/header") %>
+
+<section class="panel">
+  <p class="eyebrow">Account</p>
+  <h2>Edit Account</h2>
+
+  <form class="registration-form" method="POST" action="/register/<%= targetUser.id %>/edit">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" minlength="2" maxlength="100" required value="<%= targetUser.name %>" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" maxlength="255" required value="<%= targetUser.email %>" />
+    </div>
+
+    <button type="submit">Update Account</button>
+    <a class="button-link" href="/register/list">Cancel</a>
+  </form>
+</section>
+
+<%- include("../../partials/footer") %>

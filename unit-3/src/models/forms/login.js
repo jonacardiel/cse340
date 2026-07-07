@@ -4,9 +4,15 @@ import { query } from "../db.js";
 // Find a user by email address for login verification.
 const findUserByEmail = async (email) => {
   const result = await query(
-    `SELECT id, name, email, password, created_at
+    `SELECT users.id,
+            users.name,
+            users.email,
+            users.password,
+            users.created_at,
+            roles.role_name AS "roleName"
      FROM users
-     WHERE LOWER(email) = LOWER($1)
+     LEFT JOIN roles ON users.role_id = roles.id
+     WHERE LOWER(users.email) = LOWER($1)
      LIMIT 1`,
     [email]
   );

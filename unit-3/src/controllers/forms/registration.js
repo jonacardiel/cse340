@@ -1,33 +1,17 @@
 import bcrypt from "bcryptjs";
-import { body, validationResult } from "express-validator";
-import { emailExists, saveUser, getAllUsers } from "../../models/forms/registration.js";
-
-const registrationValidation = [
-  body("name")
-    .trim()
-    .isLength({ min: 2 })
-    .withMessage("Name needs to be at least 2 characters long."),
-  body("email")
-    .trim()
-    .isEmail()
-    .withMessage("Please enter a valid email address."),
-  body("emailConfirm")
-    .custom((value, { req }) => value === req.body.email)
-    .withMessage("Email addresses must match."),
-  body("password")
-    .isLength({ min: 8 })
-    .withMessage("Password needs to be at least 8 characters long.")
-    .matches(/(?=.*[0-9])(?=.*[^A-Za-z0-9])/)
-    .withMessage("Password must contain a number and a special character."),
-  body("passwordConfirm")
-    .custom((value, { req }) => value === req.body.password)
-    .withMessage("Password confirmation does not match.")
-];
+import { validationResult } from "express-validator";
+import {
+  emailExists,
+  saveUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser
+} from "../../models/forms/registration.js";
 
 const registrationFormPage = (req, res) => {
   res.render("forms/registration/form", {
     title: "User Registration",
-    errors: [],
     values: {
       name: "",
       email: ""
@@ -35,48 +19,36 @@ const registrationFormPage = (req, res) => {
   });
 };
 
-const submitRegistrationForm = [registrationValidation, async (req, res) => {
+const submitRegistrationForm = async (req, res) => {
   const errors = validationResult(req);
-  const formData = {
-    name: req.body.name || "",
-    email: req.body.email || ""
-  };
 
   if (!errors.isEmpty()) {
-    console.log("Registration validation errors:", errors.array());
-    return res.status(400).render("forms/registration/form", {
-      title: "User Registration",
-      errors: errors.array(),
-      values: formData
+    errors.array().forEach((error) => {
+      req.flash("error", error.msg);
     });
+
+    return res.redirect("/register");
   }
 
   try {
     const emailTaken = await emailExists(req.body.email);
 
     if (emailTaken) {
-      console.log("Email already registered");
-      return res.status(400).render("forms/registration/form", {
-        title: "User Registration",
-        errors: [{ msg: "That email is already registered." }],
-        values: formData
-      });
+      req.flash("warning", "An account with this email already exists.");
+      return res.redirect("/register");
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     await saveUser(req.body.name, req.body.email, hashedPassword);
 
-    console.log("Registration saved successfully");
-    return res.redirect("/register/list");
+    req.flash("success", "Registration successful. You can now sign in.");
+    return res.redirect("/login");
   } catch (error) {
     console.error("Registration error:", error);
-    return res.status(500).render("errors/500", {
-      title: "Server Error",
-      error: error.message,
-      stack: error.stack
-    });
+    req.flash("error", "Unable to register right now. Please try again later.");
+    return res.redirect("/register");
   }
-}];
+};
 
 const registrationListPage = async (req, res) => {
   try {
@@ -84,7 +56,8 @@ const registrationListPage = async (req, res) => {
 
     res.render("forms/registration/list", {
       title: "Registered Users",
-      users
+      users,
+      user: req.session && req.session.user ? req.session.user : null
     });
   } catch (error) {
     console.error("Registration list error:", error);
@@ -96,4 +69,112 @@ const registrationListPage = async (req, res) => {
   }
 };
 
-export { registrationFormPage, submitRegistrationForm, registrationListPage };
+const showEditAccountForm = async (req, res) => {
+  const targetUserId = parseInt(req.params.id, 10);
+  const currentUser = req.session.user;
+  const targetUser = await getUserById(targetUserId);
+
+  if (!targetUser) {
+    req.flash("error", "User not found.");
+    return res.redirect("/register/list");
+  }
+
+  const canEdit = currentUser.id === targetUserId || currentUser.roleName === "admin";
+  if (!canEdit) {
+    req.flash("error", "You do not have permission to edit this account.");
+    return res.redirect("/register/list");
+  }
+
+  res.render("forms/registration/edit", {
+    title: "Edit Account",
+    targetUser
+  });
+};
+
+const processEditAccount = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    errors.array().forEach((error) => {
+      req.flash("error", error.msg);
+    });
+
+    return res.redirect(`/register/${req.params.id}/edit`);
+  }
+
+  const targetUserId = parseInt(req.params.id, 10);
+  const currentUser = req.session.user;
+  const { name, email } = req.body;
+
+  try {
+    const targetUser = await getUserById(targetUserId);
+    if (!targetUser) {
+      req.flash("error", "User not found.");
+      return res.redirect("/register/list");
+    }
+
+    const canEdit = currentUser.id === targetUserId || currentUser.roleName === "admin";
+    if (!canEdit) {
+      req.flash("error", "You do not have permission to edit this account.");
+      return res.redirect("/register/list");
+    }
+
+    const emailTaken = await emailExists(email);
+    if (emailTaken && targetUser.email !== email) {
+      req.flash("error", "An account with this email already exists.");
+      return res.redirect(`/register/${targetUserId}/edit`);
+    }
+
+    await updateUser(targetUserId, name, email);
+
+    if (currentUser.id === targetUserId) {
+      req.session.user.name = name;
+      req.session.user.email = email;
+    }
+
+    req.flash("success", "Account updated successfully.");
+    return res.redirect("/register/list");
+  } catch (error) {
+    console.error("Error updating account:", error);
+    req.flash("error", "An error occurred while updating the account.");
+    return res.redirect(`/register/${targetUserId}/edit`);
+  }
+};
+
+const processDeleteAccount = async (req, res) => {
+  const targetUserId = parseInt(req.params.id, 10);
+  const currentUser = req.session.user;
+
+  if (currentUser.roleName !== "admin") {
+    req.flash("error", "You do not have permission to delete accounts.");
+    return res.redirect("/register/list");
+  }
+
+  if (currentUser.id === targetUserId) {
+    req.flash("error", "You cannot delete your own account.");
+    return res.redirect("/register/list");
+  }
+
+  try {
+    const deleted = await deleteUser(targetUserId);
+
+    if (deleted) {
+      req.flash("success", "User account deleted successfully.");
+    } else {
+      req.flash("error", "User not found or already deleted.");
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    req.flash("error", "An error occurred while deleting the account.");
+  }
+
+  return res.redirect("/register/list");
+};
+
+export {
+  registrationFormPage,
+  submitRegistrationForm,
+  registrationListPage,
+  showEditAccountForm,
+  processEditAccount,
+  processDeleteAccount
+};

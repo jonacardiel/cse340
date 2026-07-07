@@ -5,41 +5,31 @@
   <p class="eyebrow">Register</p>
   <h2>Create a user account</h2>
 
-  <% if (errors.length > 0) { %>
-    <div class="error-list">
-      <ul>
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
-    </div>
-  <% } %>
-
   <form class="registration-form" method="post" action="/register">
     <div class="form-group">
       <label for="name">Name</label>
-      <input type="text" id="name" name="name" minlength="2" required placeholder="Enter your full name" value="<%= values.name %>" />
+      <input type="text" id="name" name="name" minlength="2" maxlength="100" required placeholder="Enter your full name" value="<%= values.name %>" />
     </div>
 
     <div class="form-group">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required placeholder="Enter your email address" value="<%= values.email %>" />
+      <input type="email" id="email" name="email" maxlength="255" required placeholder="Enter your email address" value="<%= values.email %>" />
     </div>
 
     <div class="form-group">
       <label for="emailConfirm">Confirm Email</label>
-      <input type="email" id="emailConfirm" name="emailConfirm" required placeholder="Re-enter your email address" />
+      <input type="email" id="emailConfirm" name="emailConfirm" maxlength="255" required placeholder="Re-enter your email address" />
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" minlength="8" required pattern="(?=.*[0-9])(?=.*[!@#$%^&*]).*" placeholder="Create a password" />
-      <div class="help-text">Must be at least 8 characters with a number and special character</div>
+      <input type="password" id="password" name="password" minlength="8" maxlength="128" required pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).*" placeholder="Create a password" />
+      <div class="help-text">Must include uppercase, lowercase, number, and special character</div>
     </div>
 
     <div class="form-group">
       <label for="passwordConfirm">Confirm Password</label>
-      <input type="password" id="passwordConfirm" name="passwordConfirm" minlength="8" required pattern="(?=.*[0-9])(?=.*[!@#$%^&*]).*" placeholder="Re-enter your password" />
+      <input type="password" id="passwordConfirm" name="passwordConfirm" minlength="8" maxlength="128" required pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).*" placeholder="Re-enter your password" />
     </div>
 
     <button type="submit">Create Account</button>

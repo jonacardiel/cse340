@@ -18,7 +18,12 @@
 
   <div class="faculty-list">
     <% faculty.forEach((person) => { %>
-      <article class="card">
+      <article class="card faculty-card">
+        <img
+          class="faculty-photo"
+          src="/images/faculty/<%= person.slug %>.jpg"
+          alt="Profile photo of <%= person.name %>"
+        />
         <h3><%= person.name %></h3>
         <p><strong>Department:</strong> <%= person.department %></p>
         <p><strong>Title:</strong> <%= person.title %></p>

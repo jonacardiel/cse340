@@ -5,4 +5,17 @@
   </div>
   <%- include("nav") %>
 </header>
+<%
+  const messages = flash ? flash() : { success: [], error: [], warning: [], info: [] };
+  const hasMessages = Object.keys(messages).some((key) => messages[key].length > 0);
+%>
+<% if (hasMessages) { %>
+  <section class="flash-messages" aria-live="polite">
+    <% Object.keys(messages).forEach((type) => { %>
+      <% messages[type].forEach((message) => { %>
+        <div class="flash <%= type %>"><%= message %></div>
+      <% }) %>
+    <% }) %>
+  </section>
+<% } %>
 <main class="site-main">
