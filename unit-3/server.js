@@ -8,7 +8,7 @@ import routes from "./src/controllers/routes.js";
 import { addLocalVariables } from "./src/middleware/global.js";
 import flash from "./src/middleware/flash.js";
 import { setupDatabase } from "./src/models/setup.js";
-import { caCert } from "./src/models/db.js";
+import { connectionConfig } from "./src/models/db.js";
 import { startSessionCleanup } from "./src/utils/session-cleanup.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,14 +24,7 @@ const pgSession = connectPgSimple(session);
 // Configure session middleware
 app.use(session({
   store: new pgSession({
-    conObject: {
-      connectionString: process.env.DB_URL,
-      ssl: {
-        ca: caCert,
-        rejectUnauthorized: true,
-        checkServerIdentity: () => { return undefined; }
-      }
-    },
+    conObject: connectionConfig,
     tableName: "session",
     createTableIfMissing: true
   }),
