@@ -1,9 +1,53 @@
+.faculty-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.panel > h2 {
+  margin: 0.2rem 0 1rem;
+  font-size: clamp(1.45rem, 2.3vw, 1.9rem);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  color: var(--primary);
+}
+
+.panel > .eyebrow {
+  margin-bottom: 0.3rem;
+}
+
 .faculty-list .card {
-  border-left: 5px solid #7d4b28;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--primary);
+  border-radius: 4px;
 }
 
 .faculty-card {
-  position: relative;
+  display: grid;
+  gap: 0.65rem;
+  align-content: start;
+}
+
+.faculty-card h3 {
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.32;
+  color: var(--primary);
+}
+
+.faculty-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.faculty-card a {
+  margin-top: 0.35rem;
+  justify-self: start;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.94rem;
+  letter-spacing: 0.01em;
 }
 
 .faculty-photo {
@@ -11,23 +55,49 @@
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
-  margin-bottom: 7px;
-  border-radius: 10px;
-  background: url("https://placehold.co/480") center / cover no-repeat;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background-color: var(--surface-alt);
 }
 
 .faculty-detail {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+  grid-template-columns: minmax(220px, 280px) 1fr;
   align-items: start;
 }
 
-.faculty-photo-detail {
-  max-width: 220px;
+.faculty-detail > div {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface-alt);
+  padding: 1rem;
 }
 
-@media (max-width: 720px) {
+.faculty-detail h2 {
+  margin: 0 0 0.8rem;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  line-height: 1.28;
+  color: var(--primary);
+}
+
+.faculty-detail p {
+  margin: 0 0 0.52rem;
+  font-size: 0.97rem;
+  line-height: 1.48;
+  max-width: 60ch;
+}
+
+.faculty-detail p:last-child {
+  margin-bottom: 0;
+}
+
+.faculty-photo-detail {
+  width: 100%;
+  max-width: 280px;
+}
+
+@media (max-width: 760px) {
   .faculty-detail {
     grid-template-columns: 1fr;
   }

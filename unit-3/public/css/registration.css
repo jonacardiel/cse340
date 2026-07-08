@@ -1,120 +1,94 @@
-/* Registration Form Styles */
 .registration-form {
   max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin: 1.25rem auto;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  border-radius: 4px;
+  background-color: var(--surface);
 }
 
 .registration-form .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .registration-form .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
+  margin-bottom: 0.4rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .registration-form .form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-family: inherit;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  border-color: var(--border-strong);
 }
 
 .registration-form .form-group input:focus {
-  outline: none;
-  border-color: #2c5aa0;
-  box-shadow: 0 0 5px rgba(44, 90, 160, 0.3);
+  border-color: var(--primary);
 }
 
 .registration-form .form-group input:invalid {
-  border-color: #dc3545;
-}
-
-.registration-form .form-group input:valid {
-  border-color: #28a745;
+  border-color: #a6303f;
 }
 
 .registration-form .form-group .help-text {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--muted);
   margin-top: 0.25rem;
 }
 
 .registration-form button[type="submit"] {
   width: 100%;
-  padding: 1rem;
-  background-color: #2c5aa0;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  justify-self: stretch;
 }
 
 .registration-form button[type="submit"]:hover {
-  background-color: #1e3a6f;
+  background-color: var(--primary-strong);
 }
 
 .registration-form button[type="submit"]:disabled {
-  background-color: #ccc;
+  background-color: #8c98a4;
   cursor: not-allowed;
 }
 
 .users-list {
   max-width: 900px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
 }
 
 .users-list .user-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s ease;
-}
-
-.users-list .user-card:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  border-top: 4px solid var(--primary);
+  padding: 1rem;
 }
 
 .users-list .user-card .user-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #2c5aa0;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .users-list .user-card .user-header h3 {
   margin: 0;
-  color: #2c5aa0;
-  font-size: 1.25rem;
+  color: var(--primary);
+  font-size: 1.1rem;
 }
 
 .users-list .user-card .user-header .user-id {
-  background-color: #e9ecef;
+  background-color: var(--surface-alt);
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
   font-size: 0.875rem;
-  color: #666;
+  color: var(--muted);
   font-weight: 500;
 }
 
@@ -127,14 +101,14 @@
 }
 
 .users-list .user-card .user-details .detail-item .label {
-  font-weight: 500;
-  color: #666;
+  font-weight: 700;
+  color: var(--muted);
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
 }
 
 .users-list .user-card .user-details .detail-item .value {
-  color: #333;
+  color: var(--text);
   font-size: 1rem;
 }
 
@@ -148,35 +122,36 @@
 .button-danger {
   display: inline-block;
   padding: 0.55rem 0.9rem;
-  border-radius: 6px;
-  border: 0;
+  border-radius: 3px;
+  border: 1px solid transparent;
   text-decoration: none;
   font-size: 0.92rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .button-link {
-  background: #2c5aa0;
+  background: var(--primary);
   color: #fff;
 }
 
 .button-link:hover {
-  background: #1e3a6f;
+  background: var(--primary-strong);
 }
 
 .button-danger {
-  background: #dc3545;
+  background: #a6303f;
   color: #fff;
 }
 
 .button-danger:hover {
-  background: #b21f2d;
+  background: #882534;
 }
 
 .users-list .no-users {
   grid-column: 1 / -1;
   text-align: center;
   padding: 3rem;
-  color: #666;
+  color: var(--muted);
   font-style: italic;
 }
