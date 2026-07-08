@@ -1,13 +1,20 @@
 import { getAllFaculty, getFacultyBySlug } from "../../models/faculty/faculty.js";
+import { resolveFacultyPhotoFile } from "../../utils/faculty-image.js";
 
 const facultyListPage = async (req, res, next) => {
   try {
     const sort = req.query.sort || "name";
     const faculty = await getAllFaculty(sort);
+    const facultyWithPhotos = await Promise.all(
+      faculty.map(async (person) => ({
+        ...person,
+        photoFile: await resolveFacultyPhotoFile(person)
+      }))
+    );
 
     res.render("faculty/list", {
       title: "Faculty",
-      faculty
+      faculty: facultyWithPhotos
     });
   } catch (error) {
     console.error("Faculty list error:", error);
@@ -26,9 +33,14 @@ const facultyDetailPage = async (req, res, next) => {
       return next(err);
     }
 
+    const facultyWithPhoto = {
+      ...faculty,
+      photoFile: await resolveFacultyPhotoFile(faculty)
+    };
+
     res.render("faculty/detail", {
       title: faculty.name,
-      faculty
+      faculty: facultyWithPhoto
     });
   } catch (error) {
     console.error("Faculty detail error:", error);
