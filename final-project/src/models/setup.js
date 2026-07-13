@@ -1,7 +1,12 @@
 import bcrypt from "bcrypt";
 import { hasDatabaseConfig, query } from "./db.js";
 
-async function ensureUsersSchema() {
+async function ensureUsersSchema(defaultPasswordHash) {
+  await query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)
+  `);
+
   await query(`
     ALTER TABLE users
     ADD COLUMN IF NOT EXISTS first_name VARCHAR(80)
@@ -30,18 +35,27 @@ async function ensureUsersSchema() {
   await query(`
     UPDATE users
     SET
+      password_hash = COALESCE(NULLIF(password_hash, ''), $1),
       first_name = COALESCE(NULLIF(first_name, ''), split_part(email, '@', 1), 'User'),
       last_name = COALESCE(NULLIF(last_name, ''), 'User'),
       role = COALESCE(NULLIF(role, ''), 'customer'),
       created_at = COALESCE(created_at, CURRENT_TIMESTAMP),
       updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP)
     WHERE
+      password_hash IS NULL
+      OR password_hash = ''
       first_name IS NULL
       OR last_name IS NULL
       OR role IS NULL
       OR created_at IS NULL
       OR updated_at IS NULL
-  `);
+  `, [defaultPasswordHash]);
+
+  await query(`
+    UPDATE users
+    SET password_hash = $1
+    WHERE password_hash IS NULL OR password_hash = ''
+  `, [defaultPasswordHash]);
 
   await query(`
     ALTER TABLE users
@@ -77,7 +91,7 @@ async function setupDatabase() {
     )
   `);
 
-  await ensureUsersSchema();
+  await ensureUsersSchema(ownerPassword);
 
   await query(`
     CREATE TABLE IF NOT EXISTS categories (
@@ -215,6 +229,7 @@ async function setupDatabase() {
     ON CONFLICT (email) DO UPDATE SET
       first_name = EXCLUDED.first_name,
       last_name = EXCLUDED.last_name,
+      password_hash = EXCLUDED.password_hash,
       role = EXCLUDED.role
   `, [ownerPassword, employeePassword, customerPassword]);
 
