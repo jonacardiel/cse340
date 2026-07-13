@@ -3,6 +3,35 @@
 
 BEGIN;
 
+ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS first_name VARCHAR(80);
+
+ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS last_name VARCHAR(80);
+
+ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS role VARCHAR(20);
+
+ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+UPDATE public.users
+SET
+  first_name = COALESCE(NULLIF(first_name, ''), split_part(email, '@', 1), 'User'),
+  last_name = COALESCE(NULLIF(last_name, ''), 'User'),
+  role = COALESCE(NULLIF(role, ''), 'customer'),
+  created_at = COALESCE(created_at, CURRENT_TIMESTAMP),
+  updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP)
+WHERE
+  first_name IS NULL
+  OR last_name IS NULL
+  OR role IS NULL
+  OR created_at IS NULL
+  OR updated_at IS NULL;
+
 CREATE TABLE IF NOT EXISTS public.categories (
   id SERIAL PRIMARY KEY,
   name VARCHAR(80) NOT NULL UNIQUE,

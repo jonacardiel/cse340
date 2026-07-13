@@ -1,6 +1,64 @@
 import bcrypt from "bcrypt";
 import { hasDatabaseConfig, query } from "./db.js";
 
+async function ensureUsersSchema() {
+  await query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS first_name VARCHAR(80)
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS last_name VARCHAR(80)
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS role VARCHAR(20)
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  `);
+
+  await query(`
+    UPDATE users
+    SET
+      first_name = COALESCE(NULLIF(first_name, ''), split_part(email, '@', 1), 'User'),
+      last_name = COALESCE(NULLIF(last_name, ''), 'User'),
+      role = COALESCE(NULLIF(role, ''), 'customer'),
+      created_at = COALESCE(created_at, CURRENT_TIMESTAMP),
+      updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP)
+    WHERE
+      first_name IS NULL
+      OR last_name IS NULL
+      OR role IS NULL
+      OR created_at IS NULL
+      OR updated_at IS NULL
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ALTER COLUMN first_name SET DEFAULT 'User'
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ALTER COLUMN last_name SET DEFAULT 'User'
+  `);
+
+  await query(`
+    ALTER TABLE users
+    ALTER COLUMN role SET DEFAULT 'customer'
+  `);
+}
+
 async function setupDatabase() {
   const ownerPassword = await bcrypt.hash("P@$$w0rd!", 10);
   const employeePassword = await bcrypt.hash("P@$$w0rd!", 10);
@@ -18,6 +76,8 @@ async function setupDatabase() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  await ensureUsersSchema();
 
   await query(`
     CREATE TABLE IF NOT EXISTS categories (
