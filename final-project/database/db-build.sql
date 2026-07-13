@@ -7,6 +7,9 @@ ALTER TABLE IF EXISTS public.users
   ADD COLUMN IF NOT EXISTS name VARCHAR(160);
 
 ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS password VARCHAR(255);
+
+ALTER TABLE IF EXISTS public.users
   ADD COLUMN IF NOT EXISTS first_name VARCHAR(80);
 
 ALTER TABLE IF EXISTS public.users
@@ -27,6 +30,7 @@ ALTER TABLE IF EXISTS public.users
 UPDATE public.users
 SET
   name = COALESCE(NULLIF(name, ''), CONCAT_WS(' ', first_name, last_name), split_part(email, '@', 1), 'User'),
+  password = COALESCE(NULLIF(password, ''), 'P@$$w0rd!'),
   password_hash = COALESCE(NULLIF(password_hash, ''), 'P@$$w0rd!'),
   first_name = COALESCE(NULLIF(first_name, ''), split_part(email, '@', 1), 'User'),
   last_name = COALESCE(NULLIF(last_name, ''), 'User'),
@@ -36,6 +40,8 @@ SET
 WHERE
   name IS NULL
   OR name = ''
+  OR password IS NULL
+  OR password = ''
   OR password_hash IS NULL
   OR password_hash = ''
   first_name IS NULL
@@ -58,6 +64,7 @@ CREATE TABLE IF NOT EXISTS public.users (
   first_name VARCHAR(80) NOT NULL,
   last_name VARCHAR(80) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   role VARCHAR(20) NOT NULL DEFAULT 'customer'
     CHECK (role IN ('owner', 'employee', 'customer')),
