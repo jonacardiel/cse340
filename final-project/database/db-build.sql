@@ -4,10 +4,16 @@
 BEGIN;
 
 ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS name VARCHAR(160);
+
+ALTER TABLE IF EXISTS public.users
   ADD COLUMN IF NOT EXISTS first_name VARCHAR(80);
 
 ALTER TABLE IF EXISTS public.users
   ADD COLUMN IF NOT EXISTS last_name VARCHAR(80);
+
+ALTER TABLE IF EXISTS public.users
+  ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
 
 ALTER TABLE IF EXISTS public.users
   ADD COLUMN IF NOT EXISTS role VARCHAR(20);
@@ -20,12 +26,18 @@ ALTER TABLE IF EXISTS public.users
 
 UPDATE public.users
 SET
+  name = COALESCE(NULLIF(name, ''), CONCAT_WS(' ', first_name, last_name), split_part(email, '@', 1), 'User'),
+  password_hash = COALESCE(NULLIF(password_hash, ''), 'P@$$w0rd!'),
   first_name = COALESCE(NULLIF(first_name, ''), split_part(email, '@', 1), 'User'),
   last_name = COALESCE(NULLIF(last_name, ''), 'User'),
   role = COALESCE(NULLIF(role, ''), 'customer'),
   created_at = COALESCE(created_at, CURRENT_TIMESTAMP),
   updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP)
 WHERE
+  name IS NULL
+  OR name = ''
+  OR password_hash IS NULL
+  OR password_hash = ''
   first_name IS NULL
   OR last_name IS NULL
   OR role IS NULL
@@ -42,6 +54,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
 
 CREATE TABLE IF NOT EXISTS public.users (
   id SERIAL PRIMARY KEY,
+  name VARCHAR(160) NOT NULL,
   first_name VARCHAR(80) NOT NULL,
   last_name VARCHAR(80) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,

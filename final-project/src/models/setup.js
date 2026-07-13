@@ -50,7 +50,7 @@ async function ensureUsersSchema(defaultPasswordHash) {
     WHERE
       name IS NULL
       OR name = ''
-      password_hash IS NULL
+      OR password_hash IS NULL
       OR password_hash = ''
       OR first_name IS NULL
       OR last_name IS NULL
