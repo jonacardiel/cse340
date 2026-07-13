@@ -4,6 +4,11 @@ import { hasDatabaseConfig, query } from "./db.js";
 async function ensureUsersSchema(defaultPasswordHash) {
   await query(`
     ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS name VARCHAR(160)
+  `);
+
+  await query(`
+    ALTER TABLE users
     ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)
   `);
 
@@ -35,6 +40,7 @@ async function ensureUsersSchema(defaultPasswordHash) {
   await query(`
     UPDATE users
     SET
+      name = COALESCE(NULLIF(name, ''), CONCAT_WS(' ', first_name, last_name), split_part(email, '@', 1), 'User'),
       password_hash = COALESCE(NULLIF(password_hash, ''), $1),
       first_name = COALESCE(NULLIF(first_name, ''), split_part(email, '@', 1), 'User'),
       last_name = COALESCE(NULLIF(last_name, ''), 'User'),
@@ -42,6 +48,8 @@ async function ensureUsersSchema(defaultPasswordHash) {
       created_at = COALESCE(created_at, CURRENT_TIMESTAMP),
       updated_at = COALESCE(updated_at, CURRENT_TIMESTAMP)
     WHERE
+      name IS NULL
+      OR name = ''
       password_hash IS NULL
       OR password_hash = ''
       OR first_name IS NULL
@@ -56,6 +64,11 @@ async function ensureUsersSchema(defaultPasswordHash) {
     SET password_hash = $1
     WHERE password_hash IS NULL OR password_hash = ''
   `, [defaultPasswordHash]);
+
+  await query(`
+    ALTER TABLE users
+    ALTER COLUMN name SET DEFAULT 'User'
+  `);
 
   await query(`
     ALTER TABLE users
@@ -81,6 +94,7 @@ async function setupDatabase() {
   await query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
+      name VARCHAR(160) NOT NULL,
       first_name VARCHAR(80) NOT NULL,
       last_name VARCHAR(80) NOT NULL,
       email VARCHAR(255) UNIQUE NOT NULL,
@@ -221,12 +235,13 @@ async function setupDatabase() {
   `);
 
   await query(`
-    INSERT INTO users (first_name, last_name, email, password_hash, role)
+    INSERT INTO users (name, first_name, last_name, email, password_hash, role)
     VALUES
-      ('Olivia', 'Owner', 'owner@drivenauto.test', $1, 'owner'),
-      ('Eli', 'Employee', 'employee@drivenauto.test', $2, 'employee'),
-      ('Casey', 'Customer', 'customer@drivenauto.test', $3, 'customer')
+      ('Olivia Owner', 'Olivia', 'Owner', 'owner@drivenauto.test', $1, 'owner'),
+      ('Eli Employee', 'Eli', 'Employee', 'employee@drivenauto.test', $2, 'employee'),
+      ('Casey Customer', 'Casey', 'Customer', 'customer@drivenauto.test', $3, 'customer')
     ON CONFLICT (email) DO UPDATE SET
+      name = EXCLUDED.name,
       first_name = EXCLUDED.first_name,
       last_name = EXCLUDED.last_name,
       password_hash = EXCLUDED.password_hash,
